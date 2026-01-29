@@ -234,11 +234,11 @@ export const agentSlice: StateCreator<ChatStore, [['zustand/devtools', never]], 
           });
         }
 
-        // 停止 loading 状态
+        // Stop loading state
         log(`Stopping loading for ${assistantId}`);
         get().internal_toggleMessageLoading(false, assistantId);
 
-        // 显示桌面通知
+        // Show desktop notification
         if (isDesktop) {
           try {
             const { desktopNotificationService } =
@@ -258,14 +258,14 @@ export const agentSlice: StateCreator<ChatStore, [['zustand/devtools', never]], 
         const { phase, toolCall, pendingToolsCalling, requiresApproval } = event.data || {};
 
         if (phase === 'human_approval' && requiresApproval) {
-          // 需要人工批准
+          // Requires human approval
           log(`Human approval required for ${assistantId}:`, pendingToolsCalling);
           get().updateOperationMetadata(operationId, {
             needsHumanInput: true,
             pendingApproval: pendingToolsCalling,
           });
 
-          // 停止 loading 状态，等待人工干预
+          // Stop loading state and wait for human intervention
           log(`Stopping loading for human approval: ${assistantId}`);
           get().internal_toggleMessageLoading(false, assistantId);
         } else if (phase === 'tool_execution' && toolCall) {
@@ -279,10 +279,10 @@ export const agentSlice: StateCreator<ChatStore, [['zustand/devtools', never]], 
 
         if (phase === 'tool_execution' && result) {
           log(`Tool execution completed for ${assistantId} in ${executionTime}ms:`, result);
-          // 刷新消息以显示工具结果
+          // Refresh messages to display tool results
           await get().refreshMessages();
         } else if (phase === 'execution_complete' && finalState) {
-          // Agent 执行完成
+          // Agent execution completed
           log(`Agent execution completed for ${assistantId}:`, finalState);
           get().updateOperationMetadata(operationId, {
             finalStatus: finalState.status,
@@ -325,17 +325,17 @@ export const agentSlice: StateCreator<ChatStore, [['zustand/devtools', never]], 
     try {
       log(`Handling human intervention ${action} for operation ${messageOpId}:`, data);
 
-      // 发送人工干预请求
+      // Send human intervention request
       await agentRuntimeService.handleHumanIntervention({
         action: action as any,
         data,
         operationId: messageOpId,
       });
 
-      // 重新开始 loading 状态
+      // Restart loading state
       get().internal_toggleMessageLoading(true, assistantId);
 
-      // 清除人工干预状态
+      // Clear human intervention state
       get().updateOperationMetadata(messageOpId, {
         needsHumanInput: false,
         pendingApproval: undefined,

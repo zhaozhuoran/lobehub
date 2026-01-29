@@ -343,7 +343,7 @@ export const pluginTypes: StateCreator<
       }
     }
 
-    // 如果报错则结束了
+    // If there was an error, exit early
 
     if (!data) return;
 
@@ -487,7 +487,7 @@ export const pluginTypes: StateCreator<
 
       data = '';
     }
-    // 如果报错则结束了
+    // If there was an error, exit early
     if (!data) return;
 
     // operationId already declared above, reuse it

@@ -39,22 +39,22 @@ export const settingsSlice: StateCreator<
 
   setProxySettings: async (values) => {
     try {
-      // 更新设置
+      // Update settings
       await desktopSettingsService.setSettings(values);
 
-      // 刷新状态
+      // Refresh state
       await get().refreshProxySettings();
     } catch (error) {
-      console.error('代理设置更新失败:', error);
+      console.error('Proxy settings update failed:', error);
     }
   },
 
   updateDesktopHotkey: async (id, accelerator) => {
     try {
-      // 更新热键配置
+      // Update hotkey configuration
       const result = await desktopSettingsService.updateDesktopHotkey(id, accelerator);
 
-      // 如果更新成功，刷新状态
+      // If update succeeds, refresh state
       if (result.success) {
         await get().refreshDesktopHotkeys();
       }

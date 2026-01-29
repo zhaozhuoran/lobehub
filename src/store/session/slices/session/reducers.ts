@@ -27,7 +27,7 @@ export const sessionsReducer = (state: LobeSessions, payload: SessionDispatch): 
         const { session } = payload;
         if (!session) return;
 
-        // TODO: 后续将 Date 类型做个迁移，就可以移除这里的 ignore 了
+        // TODO: In the future, migrate the Date type so we can remove this ignore
         // @ts-ignore
         draft.unshift({ ...session, createdAt: new Date(), updatedAt: new Date() });
       });

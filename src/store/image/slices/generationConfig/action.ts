@@ -223,10 +223,10 @@ export const createGenerationConfigSlice: StateCreator<
                   newHeight = currentHeight;
                   newWidth = Math.round(currentHeight * targetRatio);
 
-                  // 确保宽度也在范围内
+                  // Ensure width is also within range
                   newWidth = Math.max(Math.min(newWidth, widthSchema.max), widthSchema.min);
                 } else {
-                  // 确保高度在范围内
+                  // Ensure height is within range
                   newHeight = Math.max(Math.min(newHeight, heightSchema.max), heightSchema.min);
                 }
 
@@ -253,7 +253,7 @@ export const createGenerationConfigSlice: StateCreator<
     const defaultValues = extractDefaultValues(parametersSchema);
     const newParams = { ...parameters };
 
-    // 如果模型支持 width/height，则计算新尺寸
+    // If model supports width/height, calculate new dimensions
     if (
       parametersSchema?.width &&
       parametersSchema?.height &&
@@ -266,7 +266,7 @@ export const createGenerationConfigSlice: StateCreator<
       newParams.height = height;
     }
 
-    // 如果模型本身支持 aspectRatio，则更新它
+    // If model itself supports aspectRatio, update it
     if (parametersSchema?.aspectRatio) {
       newParams.aspectRatio = aspectRatio;
     }
@@ -297,7 +297,7 @@ export const createGenerationConfigSlice: StateCreator<
       `setModelAndProviderOnSelect/${model}/${provider}`,
     );
 
-    // 仅在登录用户下记忆上次选择，保持与恢复策略一致
+    // Only remember last selection for logged-in users, consistent with restoration strategy
     const isLogin = authSelectors.isLogin(useUserStore.getState());
     if (isLogin) {
       useGlobalStore.getState().updateSystemStatus({

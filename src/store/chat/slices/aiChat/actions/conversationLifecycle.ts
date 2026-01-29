@@ -156,7 +156,7 @@ export const conversationLifecycle: StateCreator<
       },
     });
 
-    // 构造服务端模式临时消息的本地媒体预览（优先使用 S3 URL）
+    // Construct local media preview for server-side mode temporary messages (prefer S3 URL)
     const filesInStore = getFileStoreState().chatUploadFileList;
     const tempImages: ChatImageItem[] = filesInStore
       .filter((f) => f.file?.type?.startsWith('image'))
@@ -312,7 +312,7 @@ export const conversationLifecycle: StateCreator<
         }
       }
     } finally {
-      // 创建了新topic 或者 用户 cancel 了消息（或者失败了），此时无 data
+      // Created new topic or user cancelled message (or it failed), no data in this case
       if (data?.isCreateNewTopic || !data) {
         get().internal_dispatchMessage(
           { type: 'deleteMessages', ids: [tempId, tempAssistantId] },
