@@ -34,10 +34,10 @@ const CommunityRecommend = memo<CommunityRecommendProps>(({ mode }) => {
   const category = mode === 'write' ? AssistantCategory.CopyWriting : undefined;
 
   const { data: assistantList, isLoading: isAssistantLoading } = useAssistantList(
-    !isGroupMode ? { category, page: 1, pageSize: 10 } : undefined,
+    !isGroupMode ? { category, page: 1, pageSize: 12 } : undefined,
   );
   const { data: groupList, isLoading: isGroupLoading } = useGroupAgentList(
-    isGroupMode ? { page: 1, pageSize: 10 } : undefined,
+    isGroupMode ? { page: 1, pageSize: 12 } : undefined,
   );
 
   // Don't render if mode is invalid

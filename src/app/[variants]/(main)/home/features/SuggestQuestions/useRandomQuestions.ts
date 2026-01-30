@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { type StarterMode } from '@/store/home';
 
 const QUESTION_COUNT = 40;
-const DISPLAY_COUNT = 10;
+const DISPLAY_COUNT = 12;
 
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
