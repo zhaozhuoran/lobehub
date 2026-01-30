@@ -13,7 +13,7 @@ interface ListProps {
 }
 
 const List = memo<ListProps>(({ mode }) => {
-  const { t } = useTranslation('suggestQuestions', { useSuspense: false });
+  const { t } = useTranslation('suggestQuestions');
   const questions = useRandomQuestions(mode);
 
   if (questions.length === 0) {

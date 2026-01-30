@@ -15,7 +15,7 @@ interface SuggestQuestionsProps {
 }
 
 const SuggestQuestions = memo<SuggestQuestionsProps>(({ mode }) => {
-  const { t } = useTranslation('suggestQuestions', { useSuspense: false });
+  const { t } = useTranslation('suggestQuestions');
 
   if (!mode || !['agent', 'group', 'write'].includes(mode)) {
     return null;

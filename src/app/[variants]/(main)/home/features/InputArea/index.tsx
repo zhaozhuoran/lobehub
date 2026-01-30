@@ -1,6 +1,6 @@
 import { Flexbox } from '@lobehub/ui';
 import { AnimatePresence, m as motion } from 'motion/react';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 
 import DragUploadZone, { useUploadFiles } from '@/components/DragUploadZone';
 import { type ActionKeys, ChatInputProvider, DesktopChatInput } from '@/features/ChatInput';
@@ -11,6 +11,7 @@ import { useHomeStore } from '@/store/home';
 
 import CommunityRecommend from '../CommunityRecommend';
 import SuggestQuestions from '../SuggestQuestions';
+import SuggestQuestionsSkeleton from '../SuggestQuestions/Skeleton';
 import ModeHeader from './ModeHeader';
 import SkillInstallBanner from './SkillInstallBanner';
 import StarterList from './StarterList';
@@ -100,7 +101,9 @@ const InputArea = () => {
             }}
           >
             <Flexbox gap={24}>
-              <SuggestQuestions mode={inputActiveMode} />
+              <Suspense fallback={<SuggestQuestionsSkeleton />}>
+                <SuggestQuestions mode={inputActiveMode} />
+              </Suspense>
               <CommunityRecommend mode={inputActiveMode} />
             </Flexbox>
           </motion.div>
