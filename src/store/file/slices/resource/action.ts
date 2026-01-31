@@ -1,6 +1,8 @@
 import debug from 'debug';
 import type { StateCreator } from 'zustand/vanilla';
 
+import { documentService } from '@/services/document';
+import { fileService } from '@/services/file';
 import { resourceService } from '@/services/resource';
 import type { CreateResourceParams, ResourceItem, UpdateResourceParams } from '@/types/resource';
 
@@ -35,6 +37,11 @@ export interface ResourceAction {
    * Delete a resource with optimistic update
    */
   deleteResource: (id: string) => Promise<void>;
+
+  /**
+   * Batch delete resources with optimistic update, bypassing sync engine
+   */
+  deleteResources: (ids: string[]) => Promise<void>;
 
   /**
    * Flush pending sync operations immediately
@@ -253,6 +260,49 @@ export const createResourceSlice: StateCreator<
       });
 
       log('enqueue deleteResource', id, syncEngine);
+    },
+
+    deleteResources: async (ids) => {
+      if (ids.length === 0) return;
+
+      // 1. Read sourceType from resourceMap for each ID (client-side, no API call)
+      const { resourceMap, resourceList } = get();
+      const fileIds: string[] = [];
+      const documentIds: string[] = [];
+
+      for (const id of ids) {
+        const resource = resourceMap.get(id);
+        if (resource?.sourceType === 'document') {
+          documentIds.push(id);
+        } else {
+          fileIds.push(id);
+        }
+      }
+
+      // 2. Optimistically remove all items from store in one set() call
+      const idsSet = new Set(ids);
+      const newMap = new Map(resourceMap);
+      for (const id of ids) {
+        newMap.delete(id);
+      }
+
+      set(
+        {
+          resourceList: resourceList.filter((r) => !idsSet.has(r.id)),
+          resourceMap: newMap,
+        },
+        false,
+        'deleteResources/optimistic',
+      );
+
+      // 3. Fire batch delete APIs in background (no await — UI already updated)
+      const promises: Promise<void>[] = [];
+      if (fileIds.length > 0) promises.push(fileService.removeFiles(fileIds));
+      if (documentIds.length > 0) promises.push(documentService.deleteDocuments(documentIds));
+
+      Promise.all(promises).catch((error) => {
+        console.error('Failed to delete resources:', error);
+      });
     },
 
     flushSync: async () => {
