@@ -8,6 +8,7 @@ import { useAgentStore } from '@/store/agent';
 import { agentByIdSelectors } from '@/store/agent/selectors';
 import { useChatStore } from '@/store/chat';
 import { useHomeStore } from '@/store/home';
+import { serverConfigSelectors, useServerConfigStore } from '@/store/serverConfig';
 
 import CommunityRecommend from '../CommunityRecommend';
 import SuggestQuestions from '../SuggestQuestions';
@@ -21,6 +22,9 @@ const leftActions: ActionKeys[] = ['model', 'search', 'fileUpload', 'tools'];
 const InputArea = () => {
   const { loading, send, inboxAgentId } = useSend();
   const inputActiveMode = useHomeStore((s) => s.inputActiveMode);
+  const isLobehubSkillEnabled = useServerConfigStore(serverConfigSelectors.enableLobehubSkill);
+  const isKlavisEnabled = useServerConfigStore(serverConfigSelectors.enableKlavis);
+  const showSkillBanner = isLobehubSkillEnabled || isKlavisEnabled;
 
   // Get agent's model info for vision support check
   const model = useAgentStore((s) => agentByIdSelectors.getAgentModelById(inboxAgentId)(s));
@@ -48,8 +52,8 @@ const InputArea = () => {
 
   return (
     <Flexbox gap={16} style={{ marginBottom: 16 }}>
-      <Flexbox style={{ paddingBottom: 32, position: 'relative' }}>
-        <SkillInstallBanner />
+      <Flexbox style={{ paddingBottom: showSkillBanner ? 32 : 0, position: 'relative' }}>
+        {showSkillBanner && <SkillInstallBanner />}
         <DragUploadZone
           onUploadFiles={handleUploadFiles}
           style={{ position: 'relative', zIndex: 1 }}
